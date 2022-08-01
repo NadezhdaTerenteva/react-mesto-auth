@@ -1,7 +1,15 @@
-# Здесь будет ваш проект на Реакте с авторизацией и регистрацией
+# mesto-react
 
-Используйте ваши предыдущие наработки по проекту Mesto. Это может быть работа 11-го спринта или его улучшенная версия после 2-х последних спринтов. 
+This is a learning project  - one page website created according the brief from [Яндекс.Практикум](https://www.practicum.yandex.ru).
+Main technologies used are **HTML5, CSS, JS** 
+This project also includes API-queries for getting user data.
 
-Все запросы на авторизацию, регистрацию и проверку токена должны работать через сервис `https://auth.nomoreparties.co`. Остальные запросы, не относящиеся к этой проектной работе могут быть к бэкенду из предыдущих спринтов.
+This is a first step of transforming JS native web-site to the **React**-based application. 
 
-Успехов!
+In the project directory, you can run:
+
+### `npm run start`
+to see the web-page in browser. 
+
+To see the online-version click the [link](https://nadezhdaterenteva.github.io/mesto-react/).
+
