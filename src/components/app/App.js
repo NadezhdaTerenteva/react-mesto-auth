@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect, Route, Switch, useHistory } from "react-router-dom"; 
 
 import * as auth from "../../utils/Auth.js";
@@ -33,7 +33,13 @@ function App() {
 
   const [cards, setCards] = useState([]);
 
+  const [userInfo, setUserInfo] = useState({
+    email: '',
+  });
+
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  const history = useHistory();
 
   // Получаем данные пользователя
   useEffect(() => {
@@ -176,6 +182,54 @@ function App() {
       });
   }
 
+  function tokenCheck () {
+    const jwt = localStorage.getItem("jwt");
+    
+    if (!jwt) {
+      return;
+    }
+
+  auth
+      .getContent(jwt)
+      .then(({ email }) => {
+        setUserInfo({ email });
+        setIsLoggedIn(true);
+      });
+    };
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push('/');
+    }
+  }, [isLoggedIn, history]);
+
+  function onLogin (data) {
+    return auth
+      .authorize(data)
+      .then(({ jwt, user: { email } }) => {
+        setUserInfo({ email });
+        setIsLoggedIn(true);
+        localStorage.setItem("jwt", jwt);
+      })
+    };
+
+  function onRegister (data) {
+    return auth
+      .register(data)
+      .then(() => {
+        history.push("/sign-in");
+      });
+    };
+  
+  function onLogout () {
+      setIsLoggedIn(false);
+      localStorage.removeItem("jwt");
+        history.push("/sign-in");
+    };
 
 
   return (
@@ -184,6 +238,8 @@ function App() {
         <div className="page">
           <Header 
             isLoggedIn={isLoggedIn}
+            onLogout={onLogout}
+            user={userInfo.email}
           />
           <Switch>
             <ProtectedRoute
@@ -200,10 +256,10 @@ function App() {
               >
             </ProtectedRoute>
             <Route path="/sign-up">
-              <Register />
+              <Register onRegister={onRegister}/>
             </Route>
             <Route path="/sign-in">
-              <Login />
+              <Login onLogin={onLogin}/>
             </Route>
             <Route>
               {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}

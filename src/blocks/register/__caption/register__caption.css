@@ -1,4 +1,5 @@
 .register__caption {
+  display: block;
   width: 100%;
   margin-top: 15px;
   font-family: 'Inter';
