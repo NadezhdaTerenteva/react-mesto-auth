@@ -4,11 +4,14 @@ import { Link } from "react-router-dom";
 function Register({onRegister}) {
 
   const [registerData, setRegisterData] = useState({
-    email: '',
     password: '',
+    email: '',
   });
 
+  const [message, setMessage] = useState('');
+
   const handleChange = (evt) => {
+    setMessage('');
     const { name, value } = evt.target;
     setRegisterData({
       ...registerData,
@@ -19,8 +22,8 @@ function Register({onRegister}) {
   const handleSubmit = (evt) => {
     evt.preventDefault();
     
-    onRegister()
-      // .catch(err => setMessage(err.message || 'Что-то пошло не так'));
+    onRegister(registerData)
+      .catch(err => setMessage(err.message || 'Что-то пошло не так'));
   };
   
     return (
@@ -33,7 +36,7 @@ function Register({onRegister}) {
           id="email"
           name="email"
           placeholder="Email"
-          value={registerData.email}
+          value={registerData.email || ''}
           required
           onChange={handleChange}>
           </input>
@@ -42,12 +45,16 @@ function Register({onRegister}) {
           type="password"
           id="password"
           name="password"
+          autoComplete="current-password"
           placeholder="Пароль"
-          value={registerData.password}
+          value={registerData.password || ''}
           required
           onChange={handleChange}>
           </input>
-          <button className="register__submit-button" type="submit">Зарегистрироваться</button>
+          <button 
+          className="register__submit-button" 
+          type="submit"
+          >Зарегистрироваться</button>
         </form>
         <h4 className="register__caption">Уже зарегистрированы? 
         <Link to="/sign-in" className="egister__caption register__caption-link"> Войти</Link></h4>
