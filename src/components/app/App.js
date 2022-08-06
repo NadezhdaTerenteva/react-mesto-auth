@@ -196,7 +196,8 @@ function App() {
       return;
     }
 
-    auth.getContent(jwt).then((data) => {
+    auth.getContent(jwt)
+      .then((data) => {
       setUserEmail(data.data.email);
       setIsLoggedIn(true);
     });
