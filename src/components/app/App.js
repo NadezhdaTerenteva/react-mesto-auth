@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Redirect, Route, Switch, useHistory } from "react-router-dom"; 
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 
 import * as auth from "../../utils/Auth.js";
 import { api } from "../../utils/Api.js";
@@ -35,9 +35,9 @@ function App() {
 
   const [cards, setCards] = useState([]);
 
-  const [userInfo, setUserInfo] = useState({
-    email: '',
-  });
+  const [userEmail, setUserEmail] = useState("");
+
+  const [statusMessage, setStatusMessage] = useState(true);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -189,20 +189,18 @@ function App() {
       });
   }
 
-  function tokenCheck () {
+  function tokenCheck() {
     const jwt = localStorage.getItem("jwt");
-    
+
     if (!jwt) {
       return;
     }
 
-  auth
-      .getContent(jwt)
-      .then(({ email }) => {
-        setUserInfo({ email });
-        setIsLoggedIn(true);
-      });
-    };
+    auth.getContent(jwt).then((data) => {
+      setUserEmail(data.data.email);
+      setIsLoggedIn(true);
+    });
+  }
 
   useEffect(() => {
     tokenCheck();
@@ -210,48 +208,60 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      history.push('/');
+      history.push("/");
     }
   }, [isLoggedIn, history]);
 
-  function onLogin (data) {
+  function onLogin(data) {
     return auth
       .authorize(data)
-      .then(({ jwt, email }) => {
-        setUserInfo({ email });
+      .then((data) => {
+        setUserEmail(data.email);
         setIsLoggedIn(true);
-        localStorage.setItem("jwt", jwt);
+        localStorage.setItem("jwt", data.token);
       })
-    };
+      .catch((err) => {
+        handleInfoTooltipClick();
+        setStatusMessage(false);
+        console.log(err);
+      });
+  }
 
-  function onRegister (data) {
+  function onRegister(data) {
     return auth
       .register(data)
       .then(() => {
         history.push("/sign-in");
-        setInfotooltipOpen(true);
+        // setInfotooltipOpen(true);
+        handleInfoTooltipClick();
+        setStatusMessage(true);
+      })
+      .catch((err) => {
+        handleInfoTooltipClick();
+        setStatusMessage(false);
+        console.log(err);
       });
-    };
-  
-  function onLogout () {
-      setIsLoggedIn(false);
-      localStorage.removeItem("jwt");
-        history.push("/sign-in");
-    };
+  }
 
+  function onLogout() {
+    setIsLoggedIn(false);
+    localStorage.removeItem("jwt");
+    history.push("/sign-in");
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="body">
         <div className="page">
-          <Header 
+          <Header
             isLoggedIn={isLoggedIn}
             onLogout={onLogout}
-            user={userInfo.email}
+            user={userEmail}
           />
           <Switch>
             <ProtectedRoute
-              exact path="/"
+              exact
+              path="/"
               isLoggedIn={isLoggedIn}
               component={Main}
               onEditProfile={handleEditProfileClick}
@@ -261,15 +271,12 @@ function App() {
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
               cards={cardList}
-              >
-            </ProtectedRoute>
+            ></ProtectedRoute>
             <Route path="/sign-up">
-              <Register 
-              onRegister={onRegister}
-              />
+              <Register onRegister={onRegister} />
             </Route>
             <Route path="/sign-in">
-              <Login onLogin={onLogin}/>
+              <Login onLogin={onLogin} />
             </Route>
             <Route>
               {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
@@ -303,13 +310,13 @@ function App() {
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups}></ImagePopup>
 
-        <InfoTooltip 
+        <InfoTooltip
           name="infotooltip"
           isLoggedIn={isLoggedIn}
           isOpen={isInfoTooltipOpen}
-          onClose={closeAllPopups}>
-        </InfoTooltip>
-
+          onClose={closeAllPopups}
+          userStatus={statusMessage}
+        ></InfoTooltip>
       </div>
     </CurrentUserContext.Provider>
   );
