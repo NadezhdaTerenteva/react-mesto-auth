@@ -1,9 +1,9 @@
-import { Route, Link } from "react-router-dom";
+import { Route, Link, Switch } from "react-router-dom";
 import Logo from "../../images/logo.svg";
 
 function Header({ isLoggedIn, onLogout, user }) {
   return (
-    <>
+    <Switch>
       isLoggedIn ? (
       <Route exact path="/">
         <header className="header">
@@ -36,7 +36,7 @@ function Header({ isLoggedIn, onLogout, user }) {
         </header>
       </Route>
       )
-    </>
+    </Switch>
   );
 }
 

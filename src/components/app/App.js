@@ -39,34 +39,38 @@ function App() {
 
   const [statusMessage, setStatusMessage] = useState(true);
 
+  const [tooltipMessage, setTooltipMessage] = useState("");
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const history = useHistory();
 
   // Получаем данные пользователя
   useEffect(() => {
-    api
-      .getUserInfo()
-      .then((res) => {
-        setCurrentUser(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (isLoggedIn)
+      api
+        .getUserInfo()
+        .then((res) => {
+          setCurrentUser(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+  }, [isLoggedIn]);
 
   // Получаем карточки
 
   useEffect(() => {
-    api
-      .getCards()
-      .then((cards) => {
-        setCards(cards);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (isLoggedIn)
+      api
+        .getCards()
+        .then((cards) => {
+          setCards(cards);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+  }, [isLoggedIn]);
 
   const cardList = cards.map((item) => {
     return (
@@ -196,11 +200,15 @@ function App() {
       return;
     }
 
-    auth.getContent(jwt)
+    auth
+      .getContent(jwt)
       .then((data) => {
-      setUserEmail(data.data.email);
-      setIsLoggedIn(true);
-    });
+        setUserEmail(data.data.email);
+        setIsLoggedIn(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   useEffect(() => {
@@ -214,16 +222,18 @@ function App() {
   }, [isLoggedIn, history]);
 
   function onLogin(data) {
+    const { email, password } = data;
     return auth
-      .authorize(data)
-      .then((data) => {
-        setUserEmail(data.email);
+      .authorize(email, password)
+      .then((res) => {
+        setUserEmail(email);
         setIsLoggedIn(true);
-        localStorage.setItem("jwt", data.token);
+        localStorage.setItem("jwt", res.token);
       })
       .catch((err) => {
         handleInfoTooltipClick();
         setStatusMessage(false);
+        setTooltipMessage("Что-то пошло не так! Попробуйте ещё раз.");
         console.log(err);
       });
   }
@@ -233,14 +243,16 @@ function App() {
       .register(data)
       .then(() => {
         history.push("/sign-in");
-        // setInfotooltipOpen(true);
-        handleInfoTooltipClick();
         setStatusMessage(true);
+        setTooltipMessage("Вы успешно зарегистрировались!");
       })
       .catch((err) => {
-        handleInfoTooltipClick();
         setStatusMessage(false);
+        setTooltipMessage("Что-то пошло не так! Попробуйте ещё раз.");
         console.log(err);
+      })
+      .finally(() => {
+        handleInfoTooltipClick();
       });
   }
 
@@ -272,14 +284,14 @@ function App() {
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
               cards={cardList}
-            ></ProtectedRoute>
+            />
             <Route path="/sign-up">
               <Register onRegister={onRegister} />
             </Route>
             <Route path="/sign-in">
               <Login onLogin={onLogin} />
             </Route>
-            <Route>
+            <Route path="*">
               {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
             </Route>
           </Switch>
@@ -317,6 +329,7 @@ function App() {
           isOpen={isInfoTooltipOpen}
           onClose={closeAllPopups}
           userStatus={statusMessage}
+          tooltipMessage={tooltipMessage}
         ></InfoTooltip>
       </div>
     </CurrentUserContext.Provider>

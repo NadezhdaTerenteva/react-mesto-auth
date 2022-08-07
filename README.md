@@ -6,10 +6,10 @@ This project also includes API-queries for getting user data.
 
 This is a first step of transforming JS native web-site to the **React**-based application. 
 
-In the project directory, you can run:
-
+To see the web-page in browser you should firstly set dependecies with:
+### `npm install`
+and after that run in the project directory:
 ### `npm run start`
-to see the web-page in browser. 
 
 To see the online-version click the [link](https://nadezhdaterenteva.github.io/mesto-react/).
 
