@@ -1,5 +1,6 @@
 # Project: mesto-react
 
+## Description
 This is a learning project  - one page website created according the brief from [Yandex.Practicum](https://www.practicum.yandex.ru).
 
 Main technologies used are **HTML5, CSS, JS**. 
