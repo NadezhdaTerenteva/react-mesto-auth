@@ -1,11 +1,13 @@
-# mesto-react
+# Project: mesto-react
 
-This is a learning project  - one page website created according the brief from [Ynadex.Proacticum](https://www.practicum.yandex.ru).
-Main technologies used are **HTML5, CSS, JS** 
+This is a learning project  - one page website created according the brief from [Yandex.Practicum](https://www.practicum.yandex.ru).
+
+Main technologies used are **HTML5, CSS, JS**. 
 This project also includes API-queries for getting user data.
 
 This is a first step of transforming JS native web-site to the **React**-based application. 
 
+## Instructions 
 To see the web-page in browser you should firstly set dependecies with:
 ### `npm install`
 and after that run in the project directory:
