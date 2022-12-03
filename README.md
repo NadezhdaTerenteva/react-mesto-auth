@@ -1,4 +1,4 @@
-# Project: mesto-react
+# Project: mesto-react with registration & authorization
 
 ## Description
 This is a learning project  - one page website created according the brief from [Yandex.Practicum](https://www.practicum.yandex.ru).
@@ -7,6 +7,8 @@ Main technologies used are **HTML5, CSS, JS**.
 This project also includes API-queries for getting user data.
 
 This is a first step of transforming JS native web-site to the **React-based** application. 
+
+Here are added **registration & authorization** features.
 
 ## Instructions 
 To see the web-page in browser you should firstly set dependecies with:
