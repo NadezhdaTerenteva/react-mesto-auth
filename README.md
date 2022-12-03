@@ -6,7 +6,7 @@ This is a learning project  - one page website created according the brief from 
 Main technologies used are **HTML5, CSS, JS**. 
 This project also includes API-queries for getting user data.
 
-This is a first step of transforming JS native web-site to the **React**-based application. 
+This is a first step of transforming JS native web-site to the **React-based** application. 
 
 ## Instructions 
 To see the web-page in browser you should firstly set dependecies with:
